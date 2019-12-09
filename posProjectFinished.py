@@ -96,13 +96,13 @@ class Register:
         def pay(event=None):
             ##Try statement for catching non-integer user payment input
             try:
-                ##Tender is the integer of pennies
-                tender = int(text.get().replace('.', ''))
-                change = tender - self.total
+                ##payment is the amount paid chained to cents for easy arithmatic
+                payment = int(text.get().replace('.', ''))
+                change = payment - self.total
             except ValueError as e:
                 label.config(text=f'Invalid input: {e}')
             ##Nested if for catching insufficient user payment input
-            if tender < self.total:
+            if payment < self.total:
                 label.config(text=f'Insufficient change. Transaction cancelled.' )
             else:
                 label.config(text=f'Your change is {self.format_money(change)}. Please come again!')
