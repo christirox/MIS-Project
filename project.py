@@ -38,7 +38,7 @@ class Register:
         self.scrollbar = tk.Scrollbar(self.frame, orient=tk.VERTICAL)
         self.box = tk.Listbox(self.frame,
                               yscrollcommand=self.scrollbar.set,
-                              width=self.MAX_NAME_WIDTH + self.MAX_PRICE_WIDTH + 10)
+                              width=self.MAX_NAME_WIDTH + self.MAX_PRICE_WIDTH + 10, font =('Courier New',12))
         self.scrollbar.config(command=self.box.yview)
         self.box.grid(row=0, column=1, sticky='NS')
         self.scrollbar.grid(row=0, column=2, sticky='NS')
@@ -71,7 +71,7 @@ class Register:
         self.subtotal = sum(self.items[key].price * value for key,value in self.current_order.items())
         self.tax = round(self.subtotal * self.TAX)
         self.total = self.subtotal + self.tax
-        self.total_label.config(text=f'{self.format_money(self.subtotal):>25}\n{self.format_money(self.total):>25}')
+        self.total_label.config(text=f'Subtotal: {self.format_money(self.subtotal)}\nTotal:       {self.format_money(self.total)}')
     def scan(self, code):
         self.current_order[code] += 1
         self.current_codes.append(code)
@@ -97,7 +97,10 @@ class Register:
             # tender is integer of pennies
             tender = int(text.get().replace('.', ''))
             change = tender - self.total
-            label.config(text=f'Your change is {self.format_money(change)}. Please come again!')
+            if tender < self.total:
+                label.config(text=f'Not enough change to complete the order. ' )
+            else:
+                label.config(text=f'Your change is {self.format_money(change)}. Please come again!')
             self.new_order()
             text.config(state=tk.DISABLED)
             go.config(text='Close', command=top.destroy)
@@ -111,10 +114,7 @@ class Register:
         self.current_order = count()
         self.current_codes = []
         self.update_totals()
+        
 root = tk.Tk()
-app = Register(root)
-root.mainloop()
-
-root= tk.Tk()
 app = Register(root)
 root.mainloop()
