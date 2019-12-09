@@ -42,7 +42,6 @@ class Register:
         self.scrollbar.config(command=self.box.yview)
         self.box.grid(row=0, column=1, sticky='NS')
         self.scrollbar.grid(row=0, column=2, sticky='NS')
-        self.box.bind("<Double-Button-1>", self.modify_item)
         self.checkout_button = tk.Button(root, text='Checkout', command=self.checkout)
         self.checkout_button.grid(row=idx+2, column=1, sticky='W')
         self.new_order_button = tk.Button(root, text='New Purchase', command=self.new_order)
@@ -50,23 +49,6 @@ class Register:
         self.total_label = tk.Label(root, text='')
         self.total_label.grid(row=idx+2, column=4, sticky='E')
         self.new_order()
-    def modify_item(self, event=None):
-        top = tk.Toplevel()
-        entry = tk.Entry(top)
-        entry.pack()
-        entry.focus_set()
-        def set_new_quantity():
-            new_value = int(entry.get())
-            idx = self.box.index(tk.ACTIVE)
-            self.box.delete(idx)
-            code = self.current_codes.pop(idx)
-            self.current_order[code] -= 1
-            for i in range(new_value):
-                self.scan(code)
-            top.destroy()
-            self.update_totals()
-        confirm = tk.Button(top, text='OK', command=set_new_quantity)
-        confirm.pack()
     def update_totals(self):
         self.subtotal = sum(self.items[key].price * value for key,value in self.current_order.items())
         self.tax = round(self.subtotal * self.TAX)
@@ -88,7 +70,7 @@ class Register:
         for item in self.items.values():
             item.button.config(state=tk.DISABLED)
         top = tk.Toplevel()
-        label = tk.Label(top, text='Input money: ')
+        label = tk.Label(top, text='Input money in accounting format: ')
         label.grid(row=0, column=0)
         text = tk.Entry(top)
         text.grid(row=0, column=1)
