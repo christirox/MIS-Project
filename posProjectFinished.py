@@ -40,7 +40,7 @@ class Register:
         ##Series of attributes building GUI using Tkinter
         self.maxNameWidth = max(map(len, (item.name for item in self.items.values()))) + 3
         self.maxPriceWidth = 10
-        self.servLabel = tk.Label(root, text='Developed by Aileen Lu, Christina Germana and Mason Thomas\nPlease make your selections below')
+        self.servLabel = tk.Label(root, text='Cashier: Randall Smith\nPlease make your selections below')
         self.servLabel.grid(row=0, column=0, sticky='W')
         for idx,item in enumerate(self.items.values(), start=1):
             item.button.grid(row=idx, column=0, sticky='W')
@@ -96,13 +96,15 @@ class Register:
         def pay(event=None):
             ##Try statement for catching non-integer user payment input
             try:
-                ##payment is the amount paid chained to cents for easy arithmatic
-                payment = int(text.get().replace('.', ''))
-                change = payment - self.total
+                ##Tender is the integer of pennies
+                tender = int(text.get().replace('.', ''))
+                change = tender - self.total
             except ValueError as e:
-                label.config(text=f'Invalid input: {e}')
+                label.config(text=f'Invalid input: {e}. Transaction cancelled.')
+                self.newOrder()
+                go.config(text='Close', command=top.destroy)
             ##Nested if for catching insufficient user payment input
-            if payment < self.total:
+            if tender < self.total:
                 label.config(text=f'Insufficient change. Transaction cancelled.' )
             else:
                 label.config(text=f'Your change is {self.format_money(change)}. Please come again!')
